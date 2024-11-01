@@ -1,0 +1,134 @@
+
+from google.colab import files
+
+# Upload the file
+uploaded = files.upload()
+#Sample_dataset - Sheet1-2.csv(text/csv) - 365 bytes, last modified: n/a - 100% done
+ Saving Sample_dataset - Sheet1-2.csv to Sample_dataset - Sheet1-2.csv
+import pandas as pd
+
+# Load your dataset after uploading
+df = pd.read_csv("Sample_dataset - Sheet1-2.csv", delimiter=',', header=0)
+
+# Display all column names to diagnose
+print("Available columns in the DataFrame:")
+print(df.columns.tolist())
+
+# Display the first few rows of the DataFrame
+print(df.head())# EDA: Display the first few rows of the dataset
+print(df.head())
+
+# Check data types and missing values
+print(df.info())
+
+# Summary statistics for numerical columns
+print(df.describe())
+
+# Visualizing missing values (optional)
+import missingno as msno
+msno.matrix(df)# Dropping rows with any missing values
+df.dropna(inplace=True)
+
+# Alternatively, filling missing values with the mean or median for numerical columns
+# df.fillna(df.mean(), inplace=True)
+# Remove duplicate rows
+df.drop_duplicates(inplace=True)# Using boxplot to visualize outliers
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+plt.figure(figsize=(10, 5))
+sns.boxplot(data=df)
+plt.show()
+
+# Alternatively, using Z-score
+from scipy import stats
+import numpy as np
+
+z_scores = np.abs(stats.zscore(df.select_dtypes(include=[np.number])))
+df = df[(z_scores < 3).all(axis=1)]  # Keeping rows with Z-scores less than 3
+import pandas as pd
+import numpy as np
+from sklearn.preprocessing import MinMaxScaler
+
+# Convert all numeric columns to a common numeric type (e.g., float64)
+numeric_cols = df.select_dtypes(include=np.number).columns # Changed to np.number
+
+# Check if there are any numeric columns
+if len(numeric_cols) > 0:  # Added this condition
+    df[numeric_cols] = df[numeric_cols].astype(np.float64)
+
+    # Apply MinMaxScaler
+    scaler = MinMaxScaler()
+    df[numeric_cols] = scaler.fit_transform(df[numeric_cols])
+else:
+    print("No numeric columns found in the DataFrame. Skipping MinMaxScaler.")from sklearn.preprocessing import StandardScaler
+import pandas as pd
+import numpy as np
+
+# Convert numeric columns back to numeric type if necessary
+for col in df.select_dtypes(include=[np.number]).columns:
+    df[col] = pd.to_numeric(df[col], errors='coerce')
+
+#Select numeric features for scaling, ensure they have numeric dtypes
+numeric_features = df.select_dtypes(include=['number']).columns
+
+# Proceed with scaling only if there are numeric features
+if len(numeric_features) > 0:
+    scaler = StandardScaler()
+    df[numeric_features] = scaler.fit_transform(df[numeric_features])
+else:
+    print("No numeric columns to scale.")
+# Using One-Hot Encoding
+df = pd.get_dummies(df, drop_first=True)
+import pandas as pd
+
+# Manually creating the DataFrame
+data = {
+    'Name': ['Alice', 'Bob', 'Charlie', 'Diana', 'Eve', 'Frank', 'Grace', 'Henry', 'Ivy', 'Jack'],
+    'Age': [28, 34, 22, 45, 29, 31, 27, 38, 41, 36],
+    'Gender': ['Female', 'Male', 'Male', 'Female', 'Female', 'Male', 'Female', 'Male', 'Female', 'Male'],
+    'Salary': [72000, 48000, 54000, 90000, 61000, 59000, 68000, 83000, 91000, 65000],
+    'City': ['New York', 'Los Angeles', 'Chicago', 'New York', 'Los Angeles', 'San Francisco', 'Chicago', 'New York', 'Los Angeles', 'Chicago']
+}
+
+df = pd.DataFrame(data)
+
+# Display the DataFrame
+print("DataFrame created manually:")
+print(df)
+
+# Now proceed to create the new feature
+df['Salary_per_Age'] = df['Salary'] / df['Age']
+print("New feature 'Salary_per_Age' created:")
+print(df.head())
+
+# Replace 'Salary' with your actual target variable name
+X = df.drop('Salary', axis=1)  # Features
+y = df['Salary']  # Target variable
+import pandas as pd
+
+# Manually creating the DataFrame (or load your CSV)
+data = {
+    'Name': ['Alice', 'Bob', 'Charlie', 'Diana', 'Eve', 'Frank', 'Grace', 'Henry', 'Ivy', 'Jack'],
+    'Age': [28, 34, 22, 45, 29, 31, 27, 38, 41, 36],
+    'Gender': ['Female', 'Male', 'Male', 'Female', 'Female', 'Male', 'Female', 'Male', 'Female', 'Male'],
+    'Salary': [72000, 48000, 54000, 90000, 61000, 59000, 68000, 83000, 91000, 65000],
+    'City': ['New York', 'Los Angeles', 'Chicago', 'New York', 'Los Angeles', 'San Francisco', 'Chicago', 'New York', 'Los Angeles', 'Chicago']
+}
+
+df = pd.DataFrame(data)
+
+# Display available columns
+print("Available columns in the DataFrame:")
+print(df.columns.tolist())
+
+# Assuming 'Salary' is the target variable
+X = df.drop('Salary', axis=1)  # Features
+y = df['Salary']  # Target variable
+
+# Display the features and target variable
+print("Features (X):")
+print(X.head())
+print("Target variable (y):")
+print(y.head())
+
